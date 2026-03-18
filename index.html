@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* جميع التنسيقات كما هي */
+        /* جميع التنسيقات كما هي مع إضافة تنسيقات جديدة */
         * {
             margin: 0;
             padding: 0;
@@ -27,6 +27,8 @@
             --light: #f8fafc;
             --gray: #64748b;
             --border: #e2e8f0;
+            --supplier: #8b5cf6;
+            --supplier-sales: #ec4899;
         }
 
         body {
@@ -38,7 +40,6 @@
             padding: 10px;
         }
 
-        /* شاشة تسجيل الدخول */
         .login-container {
             background: white;
             border-radius: 40px;
@@ -129,7 +130,6 @@
             box-shadow: 0 10px 20px rgba(37,99,235,0.3);
         }
 
-        /* شاشة انتهاء الاشتراك */
         .expired-container {
             background: white;
             border-radius: 40px;
@@ -445,11 +445,6 @@
             color: var(--danger);
         }
 
-        .stat-number.negative::before {
-            content: '-';
-            margin-left: 5px;
-        }
-
         .subscription-badge {
             background: linear-gradient(135deg, var(--secondary), #059669);
             color: white;
@@ -692,6 +687,22 @@
 
         .detail-value.negative {
             color: var(--danger);
+        }
+
+        .supplier-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f3e8ff;
+            border-radius: 15px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--supplier);
+        }
+
+        .supplier-info i {
+            color: var(--supplier);
         }
 
         .stock-info {
@@ -1061,6 +1072,44 @@
             box-shadow: 0 10px 20px rgba(245,158,11,0.3);
         }
 
+        .supplier-btn {
+            background: linear-gradient(135deg, var(--supplier), #6d28d9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .supplier-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(139,92,246,0.3);
+        }
+
+        .supplier-sales-btn {
+            background: linear-gradient(135deg, var(--supplier-sales), #db2777);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .supplier-sales-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(236,72,153,0.3);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -1201,11 +1250,6 @@
 
         .profit-amount.negative {
             color: var(--danger);
-        }
-
-        .profit-amount.negative::before {
-            content: '-';
-            margin-left: 5px;
         }
 
         .profit-label {
@@ -1356,6 +1400,16 @@
 
         .permission-badge.expenses {
             background: linear-gradient(135deg, var(--danger), #b91c1c);
+            color: white;
+        }
+
+        .permission-badge.supplier {
+            background: linear-gradient(135deg, var(--supplier), #6d28d9);
+            color: white;
+        }
+
+        .permission-badge.supplier-sales {
+            background: linear-gradient(135deg, var(--supplier-sales), #db2777);
             color: white;
         }
 
@@ -1846,6 +1900,22 @@
                         <span class="badge" style="background: var(--danger);">مصروفات</span>
                     </a>
                 </li>
+                <!-- صفحة الموردين -->
+                <li class="nav-item" id="suppliersMenuItem" style="display: none;">
+                    <a class="nav-link" onclick="changePage('suppliers')">
+                        <i class="fas fa-truck"></i>
+                        الموردين
+                        <span class="badge" style="background: var(--supplier);">جديد</span>
+                    </a>
+                </li>
+                <!-- صفحة تقارير الموردين (جديدة) -->
+                <li class="nav-item" id="supplierReportsMenuItem" style="display: none;">
+                    <a class="nav-link" onclick="changePage('supplierReports')">
+                        <i class="fas fa-chart-pie"></i>
+                        تقارير الموردين
+                        <span class="badge" style="background: var(--supplier-sales);">المبيعات</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" onclick="changePage('inventory')">
                         <i class="fas fa-boxes"></i>
@@ -2175,6 +2245,181 @@
                 </div>
             </div>
 
+            <!-- صفحة الموردين -->
+            <div class="page" id="page-suppliers">
+                <div class="sales-section">
+                    <div class="sales-header">
+                        <h3 class="sales-title">
+                            <i class="fas fa-truck" style="color: var(--supplier);"></i>
+                            إضافة مورد جديد
+                        </h3>
+                    </div>
+                    
+                    <div class="expense-form" style="border-right: 5px solid var(--supplier);">
+                        <div class="form-group">
+                            <label>اسم المورد</label>
+                            <input type="text" id="supplierName" placeholder="مثال: مؤسسة النور">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>رقم الهاتف</label>
+                            <input type="text" id="supplierPhone" placeholder="مثال: 05xxxxxxxx">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>العنوان</label>
+                            <input type="text" id="supplierAddress" placeholder="مثال: الرياض - شارع الملك">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>ملاحظات</label>
+                            <textarea id="supplierNotes" placeholder="تفاصيل إضافية عن المورد"></textarea>
+                        </div>
+                        
+                        <button class="supplier-btn" onclick="addSupplier()">
+                            <i class="fas fa-plus"></i> إضافة مورد
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="sales-section">
+                    <div class="sales-header">
+                        <h3 class="sales-title">
+                            <i class="fas fa-list"></i>
+                            قائمة الموردين
+                        </h3>
+                        <div class="date-badge">إجمالي المشتريات والمبيعات</div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="suppliersTable">
+                            <thead>
+                                <tr>
+                                    <th>المورد</th>
+                                    <th>رقم الجوال</th>
+                                    <th>عدد الأصناف</th>
+                                    <th>إجمالي المشتريات</th>
+                                    <th>إجمالي المبيعات (بسعر الشراء)</th>
+                                    <th>الكمية المباعة</th>
+                                    <th>آخر توريد</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suppliersBody">
+                                <!-- يتم إضافة الموردين هنا -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="sales-section">
+                    <div class="sales-header">
+                        <h3 class="sales-title">
+                            <i class="fas fa-history"></i>
+                            سجل التوريدات
+                        </h3>
+                        <div class="date-filter">
+                            <select id="supplierFilter" onchange="filterSupplierHistory()" style="padding: 10px; border-radius: 30px; border: 2px solid var(--border);">
+                                <option value="">جميع الموردين</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="supplierHistoryTable">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>المورد</th>
+                                    <th>الصنف</th>
+                                    <th>الكمية</th>
+                                    <th>سعر الشراء</th>
+                                    <th>الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supplierHistoryBody">
+                                <!-- يتم إضافة سجل التوريدات هنا -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- صفحة تقارير الموردين (جديدة) -->
+            <div class="page" id="page-supplierReports">
+                <div class="sales-section">
+                    <div class="sales-header">
+                        <h3 class="sales-title">
+                            <i class="fas fa-chart-pie" style="color: var(--supplier-sales);"></i>
+                            تقارير المبيعات حسب المورد
+                        </h3>
+                        <div class="date-badge">بسعر الشراء (تكلفتك)</div>
+                    </div>
+                    
+                    <div class="stats-grid" style="margin-bottom: 20px;">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--supplier-sales);">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="stat-title">إجمالي المبيعات (تكلفة)</div>
+                            <div class="stat-number" id="totalSupplierSalesCost">0 ريال</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--supplier-sales);">
+                                <i class="fas fa-cubes"></i>
+                            </div>
+                            <div class="stat-title">إجمالي القطع المباعة</div>
+                            <div class="stat-number" id="totalSupplierSoldItems">0</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--supplier-sales);">
+                                <i class="fas fa-percent"></i>
+                            </div>
+                            <div class="stat-title">نسبة المبيعات من المخزون</div>
+                            <div class="stat-number" id="supplierSalesPercentage">0%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="date-filter">
+                        <select id="reportSupplierFilter" onchange="filterSupplierSalesReport()" style="padding: 10px; border-radius: 30px; border: 2px solid var(--border); flex: 1;">
+                            <option value="">جميع الموردين</option>
+                        </select>
+                        <input type="date" id="reportSupplierDateFilter" class="date-input" onchange="filterSupplierSalesReport()">
+                        <button class="filter-btn" onclick="filterSupplierSalesReport()"><i class="fas fa-search"></i> بحث</button>
+                        <button class="view-all-btn" onclick="clearSupplierSalesFilter()"><i class="fas fa-times"></i> إلغاء التصفية</button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="supplierSalesTable">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>المورد</th>
+                                    <th>الصنف</th>
+                                    <th>الكمية المباعة</th>
+                                    <th>سعر الشراء</th>
+                                    <th>إجمالي التكلفة</th>
+                                    <th>سعر البيع</th>
+                                    <th>الربح</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supplierSalesBody">
+                                <!-- يتم إضافة مبيعات الموردين هنا -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div style="margin-top: 20px; background: var(--light); padding: 20px; border-radius: 30px;">
+                        <h4 style="margin-bottom: 15px; color: var(--dark);">ملخص الموردين</h4>
+                        <div id="supplierSummary">
+                            <!-- يتم إضافة ملخص الموردين هنا -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- صفحة المخزون -->
             <div class="page" id="page-inventory">
                 <div class="table-container">
@@ -2193,6 +2438,7 @@
                                 <th>سعر البيع</th>
                                 <th>ربح القطعة</th>
                                 <th>إجمالي القيمة</th>
+                                <th>المورد</th>
                                 <th>الإجراءات</th>
                             </tr>
                         </thead>
@@ -2385,6 +2631,10 @@
                                 <span id="backupUsersCount">0</span>
                             </div>
                             <div class="backup-info-item">
+                                <span>عدد الموردين:</span>
+                                <span id="backupSuppliersCount">0</span>
+                            </div>
+                            <div class="backup-info-item">
                                 <span>آخر نسخة:</span>
                                 <span id="lastBackupTime">لم يتم</span>
                             </div>
@@ -2459,7 +2709,7 @@
                         
                         <div style="background: #fee2e2; padding: 15px; border-radius: 20px; margin: 20px 0; color: #991b1b; text-align: right;">
                             <p><i class="fas fa-exclamation-circle"></i> تحذير: هذا الإجراء لا يمكن التراجع عنه!</p>
-                            <p>سيتم حذف جميع: الأصناف، المبيعات، المرتجعات، المخرجات، المستخدمين</p>
+                            <p>سيتم حذف جميع: الأصناف، المبيعات، المرتجعات، المخرجات، المستخدمين، الموردين</p>
                         </div>
                         
                         <button class="danger-btn" onclick="confirmFactoryReset()" style="width: 100%;">
@@ -2491,7 +2741,7 @@
         </div>
     </div>
 
-    <!-- مودال إضافة/تعديل صنف -->
+    <!-- مودال إضافة/تعديل صنف (مع إضافة المورد) -->
     <div class="modal" id="itemModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -2524,8 +2774,55 @@
                     <input type="number" id="itemSell" required min="0" value="150">
                 </div>
                 
+                <div class="form-group">
+                    <label>اختر المورد</label>
+                    <select id="itemSupplier" required>
+                        <option value="">-- اختر المورد --</option>
+                    </select>
+                </div>
+                
                 <button type="submit" class="submit-btn">
                     <i class="fas fa-save"></i> حفظ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- مودال إضافة/تعديل مورد -->
+    <div class="modal" id="supplierModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: var(--supplier);">تعديل بيانات المورد</h3>
+                <button class="close-modal" onclick="closeSupplierModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form onsubmit="event.preventDefault(); updateSupplier();">
+                <input type="hidden" id="editSupplierId" value="">
+                
+                <div class="form-group">
+                    <label>اسم المورد</label>
+                    <input type="text" id="editSupplierName" required placeholder="مثال: مؤسسة النور">
+                </div>
+                
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="text" id="editSupplierPhone" placeholder="مثال: 05xxxxxxxx">
+                </div>
+                
+                <div class="form-group">
+                    <label>العنوان</label>
+                    <input type="text" id="editSupplierAddress" placeholder="مثال: الرياض - شارع الملك">
+                </div>
+                
+                <div class="form-group">
+                    <label>ملاحظات</label>
+                    <textarea id="editSupplierNotes" placeholder="تفاصيل إضافية عن المورد"></textarea>
+                </div>
+                
+                <button type="submit" class="supplier-btn" style="width: 100%;">
+                    <i class="fas fa-save"></i> حفظ التعديلات
                 </button>
             </form>
         </div>
@@ -2667,6 +2964,28 @@
                     
                     <div class="permission-item">
                         <label>
+                            <i class="fas fa-truck" style="color: var(--supplier);"></i>
+                            صلاحية إدارة الموردين
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="userCanManageSuppliers">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="permission-item">
+                        <label>
+                            <i class="fas fa-chart-pie" style="color: var(--supplier-sales);"></i>
+                            صلاحية تقارير الموردين
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="userCanViewSupplierReports">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="permission-item">
+                        <label>
                             <i class="fas fa-crown" style="color: var(--warning);"></i>
                             صلاحية كاملة (كل شيء)
                         </label>
@@ -2719,6 +3038,42 @@
                     <i class="fas fa-key"></i> تغيير كلمة المرور
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- مودال تأكيد حذف المورد -->
+    <div class="modal" id="deleteSupplierConfirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: var(--danger);">تأكيد حذف المورد</h3>
+                <button class="close-modal" onclick="closeDeleteSupplierModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div style="text-align: center; padding: 20px;">
+                <div style="font-size: 80px; color: var(--danger); margin-bottom: 20px;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h4 style="font-size: 24px; margin-bottom: 20px; color: var(--dark);" id="deleteSupplierName"></h4>
+                <p style="font-size: 18px; margin-bottom: 30px; color: var(--gray);">
+                    هل أنت متأكد من حذف هذا المورد؟
+                </p>
+                
+                <div style="background: #fee2e2; padding: 15px; border-radius: 20px; margin: 20px 0; color: #991b1b; text-align: right;">
+                    <p><i class="fas fa-exclamation-circle"></i> سيتم فصل جميع الأصناف المرتبطة بهذا المورد</p>
+                    <p><i class="fas fa-exclamation-circle"></i> لا يمكن التراجع عن هذا الإجراء</p>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button class="danger-btn" onclick="confirmDeleteSupplier()" style="flex: 1;">
+                        <i class="fas fa-trash"></i> نعم، حذف
+                    </button>
+                    <button class="submit-btn" onclick="closeDeleteSupplierModal()" style="flex: 1;">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2783,6 +3138,7 @@
                     <p><i class="fas fa-times-circle"></i> حذف جميع المبيعات</p>
                     <p><i class="fas fa-times-circle"></i> حذف جميع المرتجعات</p>
                     <p><i class="fas fa-times-circle"></i> حذف جميع المخرجات</p>
+                    <p><i class="fas fa-times-circle"></i> حذف جميع الموردين</p>
                     <p><i class="fas fa-times-circle"></i> حذف جميع المستخدمين</p>
                     <p><i class="fas fa-times-circle"></i> العودة للمستخدمين الافتراضيين</p>
                 </div>
@@ -2813,7 +3169,7 @@
             expiryDate: '31 ديسمبر 2026'
         };
 
-        // تعريف المستخدمين الافتراضيين بشكل ثابت خارج أي دالة
+        // تعريف المستخدمين الافتراضيين مع صلاحيات كاملة للأدمن
         const DEFAULT_USERS = [
             { 
                 id: 1, 
@@ -2830,6 +3186,8 @@
                     canFactoryReset: true,
                     canChangeSiteName: true,
                     canManageExpenses: true,
+                    canManageSuppliers: true,
+                    canViewSupplierReports: true,
                     hasFullAccess: true
                 }
             },
@@ -2848,6 +3206,8 @@
                     canFactoryReset: false,
                     canChangeSiteName: false,
                     canManageExpenses: true,
+                    canManageSuppliers: false,
+                    canViewSupplierReports: true,
                     hasFullAccess: false
                 }
             },
@@ -2866,6 +3226,8 @@
                     canFactoryReset: false,
                     canChangeSiteName: false,
                     canManageExpenses: true,
+                    canManageSuppliers: true,
+                    canViewSupplierReports: true,
                     hasFullAccess: false
                 }
             },
@@ -2884,24 +3246,35 @@
                     canFactoryReset: true,
                     canChangeSiteName: true,
                     canManageExpenses: true,
+                    canManageSuppliers: true,
+                    canViewSupplierReports: true,
                     hasFullAccess: true
                 }
             }
         ];
 
+        // البيانات الافتراضية للموردين
+        const DEFAULT_SUPPLIERS = [
+            { id: 1, name: 'مؤسسة النور', phone: '0500000001', address: 'الرياض', notes: 'مورد رئيسي' },
+            { id: 2, name: 'شركة البركة', phone: '0500000002', address: 'جدة', notes: 'مورد ثانوي' },
+            { id: 3, name: 'مصنع الأمل', phone: '0500000003', address: 'الدمام', notes: 'مورد الجملة' }
+        ];
+
         const DEFAULT_INVENTORY = [
-            { id: 1, name: 'كيلو', quantity: 50, buyPrice: 3800, sellPrice: 4500 },
-            { id: 2, name: 'ديا 4', quantity: 2600, buyPrice: 180, sellPrice: 300 },
-            { id: 3, name: 'ديا 3', quantity: 2700, buyPrice: 150, sellPrice: 250 },
-            { id: 4, name: 'ديا 2', quantity: 100, buyPrice: 120, sellPrice: 200 },
-            { id: 5, name: 'ديا 1', quantity: 1500, buyPrice: 100, sellPrice: 180 },
-            { id: 6, name: 'ديا 0', quantity: 1400, buyPrice: 80, sellPrice: 150 },
-            { id: 7, name: 'خاص', quantity: 900, buyPrice: 150, sellPrice: 250 }
+            { id: 1, name: 'كيلو', quantity: 50, buyPrice: 3800, sellPrice: 4500, supplierId: 1 },
+            { id: 2, name: 'ديا 4', quantity: 2600, buyPrice: 180, sellPrice: 300, supplierId: 2 },
+            { id: 3, name: 'ديا 3', quantity: 2700, buyPrice: 150, sellPrice: 250, supplierId: 2 },
+            { id: 4, name: 'ديا 2', quantity: 100, buyPrice: 120, sellPrice: 200, supplierId: 1 },
+            { id: 5, name: 'ديا 1', quantity: 1500, buyPrice: 100, sellPrice: 180, supplierId: 3 },
+            { id: 6, name: 'ديا 0', quantity: 1400, buyPrice: 80, sellPrice: 150, supplierId: 3 },
+            { id: 7, name: 'خاص', quantity: 900, buyPrice: 150, sellPrice: 250, supplierId: 1 }
         ];
 
         // بيانات المبيعات والمصروفات
         let users = JSON.parse(JSON.stringify(DEFAULT_USERS));
         let inventory = JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
+        let suppliers = JSON.parse(JSON.stringify(DEFAULT_SUPPLIERS));
+        let supplierHistory = []; // سجل التوريدات
         let allSales = [];
         let allReturns = [];
         let allExpenses = [];
@@ -2914,8 +3287,10 @@
         let showAllItems = false;
         let currentSearchTerm = '';
         let userToDelete = null;
+        let supplierToDelete = null;
         let currentHistoryFilter = '';
         let currentReportFilter = '';
+        let currentSupplierSalesFilter = { supplierId: '', date: '' };
 
         // ========== دوال التهيئة ==========
         function initializeData() {
@@ -2931,6 +3306,12 @@
                     if (data.inventory && Array.isArray(data.inventory) && data.inventory.length > 0) {
                         inventory = data.inventory;
                     }
+                    if (data.suppliers && Array.isArray(data.suppliers) && data.suppliers.length > 0) {
+                        suppliers = data.suppliers;
+                    } else {
+                        suppliers = JSON.parse(JSON.stringify(DEFAULT_SUPPLIERS));
+                    }
+                    if (data.supplierHistory) supplierHistory = data.supplierHistory;
                     if (data.allSales) allSales = data.allSales;
                     if (data.allReturns) allReturns = data.allReturns;
                     if (data.allExpenses) allExpenses = data.allExpenses;
@@ -2943,6 +3324,7 @@
                 // في حالة الخطأ، نستخدم البيانات الافتراضية
                 users = JSON.parse(JSON.stringify(DEFAULT_USERS));
                 inventory = JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
+                suppliers = JSON.parse(JSON.stringify(DEFAULT_SUPPLIERS));
             }
             
             // تحديث بيانات اليوم
@@ -2963,6 +3345,8 @@
                     siteSettings: siteSettings,
                     users: users,
                     inventory: inventory,
+                    suppliers: suppliers,
+                    supplierHistory: supplierHistory,
                     allSales: allSales,
                     allReturns: allReturns,
                     allExpenses: allExpenses,
@@ -2988,7 +3372,7 @@
             localStorage.setItem('lastDate', today);
         }
 
-        // ========== دوال تسجيل الدخول ==========
+        // ========== دوال تسجيل الدخول (معدلة مع صلاحيات الأدمن) ==========
         function login() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
@@ -3002,7 +3386,25 @@
             const user = users.find(u => u && u.username === username && u.password === password);
             
             if (user) {
-                currentUser = user;
+                // نسخة عميقة من المستخدم مع الصلاحيات
+                currentUser = JSON.parse(JSON.stringify(user));
+                
+                // التأكد من صلاحيات الأدمن (إذا كان id = 1 أو دوره مدير نظام)
+                if (currentUser.id === 1 || currentUser.role === 'مدير النظام' || currentUser.role === 'مدير كامل') {
+                    currentUser.permissions = {
+                        canReturn: true,
+                        canEditItems: true,
+                        canManageUsers: true,
+                        canViewReports: true,
+                        canChangeAdminPassword: true,
+                        canFactoryReset: true,
+                        canChangeSiteName: true,
+                        canManageExpenses: true,
+                        canManageSuppliers: true,
+                        canViewSupplierReports: true,
+                        hasFullAccess: true
+                    };
+                }
                 
                 const currentYear = new Date().getFullYear();
                 if (siteSettings.subscriptionYear < currentYear) {
@@ -3016,10 +3418,10 @@
                 document.getElementById('appContainer').classList.add('show');
                 
                 // تحديث معلومات المستخدم في الواجهة
-                document.getElementById('userName').textContent = user.name;
-                document.getElementById('userRole').textContent = `(${user.role})`;
-                document.getElementById('mobileUserName').textContent = user.name.split(' ')[0];
-                document.getElementById('mobileUserAvatar').textContent = user.name.charAt(0);
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userRole').textContent = `(${currentUser.role})`;
+                document.getElementById('mobileUserName').textContent = currentUser.name.split(' ')[0];
+                document.getElementById('mobileUserAvatar').textContent = currentUser.name.charAt(0);
                 
                 checkNewDay();
                 updateUIBasedOnPermissions();
@@ -3037,7 +3439,23 @@
                 const dashboardLink = document.querySelector('.nav-link[onclick="changePage(\'dashboard\')"]');
                 if (dashboardLink) dashboardLink.classList.add('active');
                 
-                showAlert(`مرحباً ${user.name}`, 'success');
+                // عرض رسالة ترحيب مع الصلاحيات
+                let permissionsList = [];
+                if (currentUser.permissions.hasFullAccess) {
+                    permissionsList.push('⭐ صلاحية كاملة');
+                } else {
+                    if (currentUser.permissions.canReturn) permissionsList.push('مسترجع');
+                    if (currentUser.permissions.canEditItems) permissionsList.push('تعديل أصناف');
+                    if (currentUser.permissions.canManageUsers) permissionsList.push('إدارة مستخدمين');
+                    if (currentUser.permissions.canViewReports) permissionsList.push('تقارير');
+                    if (currentUser.permissions.canManageSuppliers) permissionsList.push('موردين');
+                }
+                
+                showAlert(`مرحباً ${currentUser.name} (${permissionsList.join(' • ')})`, 'success');
+                
+                // للتأكد - طباعة الصلاحيات في الكونسول
+                console.log('المستخدم الحالي:', currentUser);
+                console.log('الصلاحيات:', currentUser.permissions);
             } else {
                 showAlert('خطأ في اسم المستخدم أو كلمة المرور', 'error');
             }
@@ -3113,6 +3531,8 @@
                 document.getElementById('userCanFactoryReset').checked = true;
                 document.getElementById('userCanChangeSiteName').checked = true;
                 document.getElementById('userCanManageExpenses').checked = true;
+                document.getElementById('userCanManageSuppliers').checked = true;
+                document.getElementById('userCanViewSupplierReports').checked = true;
                 document.getElementById('userHasFullAccess').checked = true;
                 document.getElementById('fullAccessNote').style.display = 'block';
             } else if (role === 'مشرف') {
@@ -3124,6 +3544,8 @@
                 document.getElementById('userCanFactoryReset').checked = false;
                 document.getElementById('userCanChangeSiteName').checked = false;
                 document.getElementById('userCanManageExpenses').checked = true;
+                document.getElementById('userCanManageSuppliers').checked = true;
+                document.getElementById('userCanViewSupplierReports').checked = true;
                 document.getElementById('userHasFullAccess').checked = false;
                 document.getElementById('fullAccessNote').style.display = 'none';
             } else if (role === 'محاسب') {
@@ -3135,6 +3557,8 @@
                 document.getElementById('userCanFactoryReset').checked = false;
                 document.getElementById('userCanChangeSiteName').checked = false;
                 document.getElementById('userCanManageExpenses').checked = true;
+                document.getElementById('userCanManageSuppliers').checked = false;
+                document.getElementById('userCanViewSupplierReports').checked = true;
                 document.getElementById('userHasFullAccess').checked = false;
                 document.getElementById('fullAccessNote').style.display = 'none';
             } else {
@@ -3146,6 +3570,8 @@
                 document.getElementById('userCanFactoryReset').checked = false;
                 document.getElementById('userCanChangeSiteName').checked = false;
                 document.getElementById('userCanManageExpenses').checked = false;
+                document.getElementById('userCanManageSuppliers').checked = false;
+                document.getElementById('userCanViewSupplierReports').checked = false;
                 document.getElementById('userHasFullAccess').checked = false;
                 document.getElementById('fullAccessNote').style.display = 'none';
             }
@@ -3163,6 +3589,8 @@
                 document.getElementById('userCanFactoryReset').checked = true;
                 document.getElementById('userCanChangeSiteName').checked = true;
                 document.getElementById('userCanManageExpenses').checked = true;
+                document.getElementById('userCanManageSuppliers').checked = true;
+                document.getElementById('userCanViewSupplierReports').checked = true;
                 document.getElementById('fullAccessNote').style.display = 'block';
                 document.getElementById('userRole').value = 'مدير كامل';
             } else {
@@ -3170,85 +3598,12 @@
             }
         }
 
-        // ========== دوال تغيير كلمة مرور الأدمن ==========
-        function openChangeAdminPasswordModal() {
-            if (!currentUser.permissions.canChangeAdminPassword) {
-                showAlert('ليس لديك صلاحية تغيير كلمة مرور الأدمن', 'error');
-                return;
-            }
-            document.getElementById('changeAdminPasswordModal').classList.add('show');
-        }
-
-        function closeAdminPasswordModal() {
-            document.getElementById('changeAdminPasswordModal').classList.remove('show');
-            document.getElementById('newAdminPassword').value = '';
-            document.getElementById('confirmAdminPassword').value = '';
-        }
-
-        function changeAdminPassword() {
-            const newPassword = document.getElementById('newAdminPassword').value;
-            const confirmPassword = document.getElementById('confirmAdminPassword').value;
-            
-            if (!newPassword || !confirmPassword) {
-                showAlert('الرجاء إدخال كلمة المرور', 'error');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                showAlert('كلمة المرور غير متطابقة', 'error');
-                return;
-            }
-            
-            const admin = users.find(u => u.id === 1);
-            if (admin) {
-                admin.password = newPassword;
-                saveToLocalStorage();
-                showAlert('تم تغيير كلمة مرور الأدمن بنجاح', 'success');
-                closeAdminPasswordModal();
-            }
-        }
-
-        // ========== دوال حذف المستخدمين ==========
-        function openDeleteUserModal(userId) {
-            if (!currentUser.permissions.canManageUsers && !currentUser.permissions.hasFullAccess) {
-                showAlert('ليس لديك صلاحية حذف المستخدمين', 'error');
-                return;
-            }
-            
-            const user = users.find(u => u.id === userId);
-            if (!user) return;
-            
-            if (user.id === 1) {
-                showAlert('لا يمكن حذف الأدمن الرئيسي', 'error');
-                return;
-            }
-            
-            userToDelete = userId;
-            document.getElementById('deleteUserName').textContent = user.name;
-            document.getElementById('deleteUserConfirmModal').classList.add('show');
-        }
-
-        function closeDeleteUserModal() {
-            document.getElementById('deleteUserConfirmModal').classList.remove('show');
-            userToDelete = null;
-        }
-
-        function confirmDeleteUser() {
-            if (!userToDelete) return;
-            
-            users = users.filter(u => u.id !== userToDelete);
-            saveToLocalStorage();
-            loadUsers();
-            
-            closeDeleteUserModal();
-            showAlert('تم حذف المستخدم بنجاح', 'success');
-        }
-
-        // ========== دوال التحقق من الصلاحيات ==========
+        // ========== دوال التحقق من الصلاحيات (معدلة) ==========
         function checkPermission(permission) {
             if (!currentUser) return false;
-            if (currentUser.permissions && currentUser.permissions.hasFullAccess) return true;
-            return currentUser.permissions ? currentUser.permissions[permission] || false : false;
+            if (!currentUser.permissions) return false;
+            if (currentUser.permissions.hasFullAccess) return true;
+            return currentUser.permissions[permission] === true;
         }
 
         function updateUIBasedOnPermissions() {
@@ -3265,6 +3620,8 @@
                 if (checkPermission('canFactoryReset')) permissionsText.push('🔄 إعادة ضبط');
                 if (checkPermission('canChangeSiteName')) permissionsText.push('✏️ اسم الموقع');
                 if (checkPermission('canManageExpenses')) permissionsText.push('💰 مخرجات');
+                if (checkPermission('canManageSuppliers')) permissionsText.push('🚚 موردين');
+                if (checkPermission('canViewSupplierReports')) permissionsText.push('📊 تقارير موردين');
             }
             
             document.getElementById('userPermissions').textContent = permissionsText.join(' • ');
@@ -3294,6 +3651,16 @@
                 expensesMenuItem.style.display = checkPermission('canManageExpenses') ? 'block' : 'none';
             }
             
+            const suppliersMenuItem = document.getElementById('suppliersMenuItem');
+            if (suppliersMenuItem) {
+                suppliersMenuItem.style.display = checkPermission('canManageSuppliers') ? 'block' : 'none';
+            }
+            
+            const supplierReportsMenuItem = document.getElementById('supplierReportsMenuItem');
+            if (supplierReportsMenuItem) {
+                supplierReportsMenuItem.style.display = checkPermission('canViewSupplierReports') ? 'block' : 'none';
+            }
+            
             const factoryResetCard = document.getElementById('factoryResetCard');
             if (factoryResetCard) {
                 factoryResetCard.style.display = checkPermission('canFactoryReset') ? 'block' : 'none';
@@ -3321,6 +3688,8 @@
         function factoryReset() {
             users = JSON.parse(JSON.stringify(DEFAULT_USERS));
             inventory = JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
+            suppliers = JSON.parse(JSON.stringify(DEFAULT_SUPPLIERS));
+            supplierHistory = [];
             allSales = [];
             allReturns = [];
             allExpenses = [];
@@ -3342,6 +3711,453 @@
             
             closeResetModal();
             showAlert('تم إعادة ضبط المصنع بنجاح', 'success');
+        }
+
+        // ========== دوال الموردين (معدلة مع إضافة إحصائيات المبيعات) ==========
+        function addSupplier() {
+            if (!checkPermission('canManageSuppliers')) {
+                showAlert('ليس لديك صلاحية إدارة الموردين', 'error');
+                return;
+            }
+            
+            const name = document.getElementById('supplierName').value.trim();
+            const phone = document.getElementById('supplierPhone').value.trim();
+            const address = document.getElementById('supplierAddress').value.trim();
+            const notes = document.getElementById('supplierNotes').value.trim();
+            
+            if (!name) {
+                showAlert('الرجاء إدخال اسم المورد', 'error');
+                return;
+            }
+            
+            const supplier = {
+                id: Date.now(),
+                name: name,
+                phone: phone,
+                address: address,
+                notes: notes
+            };
+            
+            suppliers.push(supplier);
+            saveToLocalStorage();
+            loadSuppliers();
+            updateSupplierSelect();
+            updateSupplierReportFilter();
+            
+            // تفريغ الحقول
+            document.getElementById('supplierName').value = '';
+            document.getElementById('supplierPhone').value = '';
+            document.getElementById('supplierAddress').value = '';
+            document.getElementById('supplierNotes').value = '';
+            
+            showAlert('تم إضافة المورد بنجاح', 'success');
+        }
+
+        function editSupplier(supplierId) {
+            if (!checkPermission('canManageSuppliers')) {
+                showAlert('ليس لديك صلاحية تعديل الموردين', 'error');
+                return;
+            }
+            
+            const supplier = suppliers.find(s => s.id === supplierId);
+            if (supplier) {
+                document.getElementById('editSupplierId').value = supplier.id;
+                document.getElementById('editSupplierName').value = supplier.name;
+                document.getElementById('editSupplierPhone').value = supplier.phone || '';
+                document.getElementById('editSupplierAddress').value = supplier.address || '';
+                document.getElementById('editSupplierNotes').value = supplier.notes || '';
+                document.getElementById('supplierModal').classList.add('show');
+            }
+        }
+
+        function closeSupplierModal() {
+            document.getElementById('supplierModal').classList.remove('show');
+        }
+
+        function updateSupplier() {
+            const id = parseInt(document.getElementById('editSupplierId').value);
+            const name = document.getElementById('editSupplierName').value.trim();
+            const phone = document.getElementById('editSupplierPhone').value.trim();
+            const address = document.getElementById('editSupplierAddress').value.trim();
+            const notes = document.getElementById('editSupplierNotes').value.trim();
+            
+            const supplier = suppliers.find(s => s.id === id);
+            if (supplier) {
+                supplier.name = name;
+                supplier.phone = phone;
+                supplier.address = address;
+                supplier.notes = notes;
+                
+                saveToLocalStorage();
+                loadSuppliers();
+                updateSupplierSelect();
+                updateSupplierReportFilter();
+                closeSupplierModal();
+                showAlert('تم تعديل بيانات المورد بنجاح', 'success');
+            }
+        }
+
+        function openDeleteSupplierModal(supplierId) {
+            if (!checkPermission('canManageSuppliers')) {
+                showAlert('ليس لديك صلاحية حذف الموردين', 'error');
+                return;
+            }
+            
+            const supplier = suppliers.find(s => s.id === supplierId);
+            if (supplier) {
+                supplierToDelete = supplierId;
+                document.getElementById('deleteSupplierName').textContent = supplier.name;
+                document.getElementById('deleteSupplierConfirmModal').classList.add('show');
+            }
+        }
+
+        function closeDeleteSupplierModal() {
+            document.getElementById('deleteSupplierConfirmModal').classList.remove('show');
+            supplierToDelete = null;
+        }
+
+        function confirmDeleteSupplier() {
+            if (!supplierToDelete) return;
+            
+            // تحديث الأصناف المرتبطة بالمورد
+            inventory.forEach(item => {
+                if (item.supplierId === supplierToDelete) {
+                    item.supplierId = null;
+                }
+            });
+            
+            suppliers = suppliers.filter(s => s.id !== supplierToDelete);
+            
+            saveToLocalStorage();
+            loadSuppliers();
+            updateSupplierSelect();
+            updateSupplierReportFilter();
+            
+            closeDeleteSupplierModal();
+            showAlert('تم حذف المورد بنجاح', 'success');
+        }
+
+        // حساب إحصائيات المبيعات حسب المورد (بسعر الشراء)
+        function getSupplierSalesStats() {
+            const stats = {};
+            
+            // تهيئة الإحصائيات لكل مورد
+            suppliers.forEach(supplier => {
+                stats[supplier.id] = {
+                    supplierId: supplier.id,
+                    supplierName: supplier.name,
+                    totalSoldQuantity: 0,
+                    totalCost: 0,
+                    totalRevenue: 0,
+                    totalProfit: 0,
+                    items: {}
+                };
+            });
+            
+            // حساب المبيعات (نستخدم allSales عشان نشوف كل المبيعات)
+            allSales.forEach(sale => {
+                const item = inventory.find(i => i.id === sale.itemId);
+                if (item && item.supplierId) {
+                    const supplierId = item.supplierId;
+                    if (stats[supplierId]) {
+                        stats[supplierId].totalSoldQuantity += sale.quantity;
+                        stats[supplierId].totalCost += sale.quantity * sale.buyPrice;
+                        stats[supplierId].totalRevenue += sale.total;
+                        stats[supplierId].totalProfit += sale.profit;
+                        
+                        // تفاصيل لكل صنف
+                        if (!stats[supplierId].items[item.id]) {
+                            stats[supplierId].items[item.id] = {
+                                name: item.name,
+                                quantity: 0,
+                                cost: 0,
+                                revenue: 0,
+                                profit: 0
+                            };
+                        }
+                        stats[supplierId].items[item.id].quantity += sale.quantity;
+                        stats[supplierId].items[item.id].cost += sale.quantity * sale.buyPrice;
+                        stats[supplierId].items[item.id].revenue += sale.total;
+                        stats[supplierId].items[item.id].profit += sale.profit;
+                    }
+                }
+            });
+            
+            return stats;
+        }
+
+        function loadSuppliers() {
+            const tbody = document.getElementById('suppliersBody');
+            if (!tbody) return;
+            
+            let html = '';
+            
+            // حساب إحصائيات المشتريات من سجل التوريدات
+            const purchaseStats = {};
+            supplierHistory.forEach(record => {
+                if (!purchaseStats[record.supplierId]) {
+                    purchaseStats[record.supplierId] = { total: 0, items: 0, lastDate: '' };
+                }
+                purchaseStats[record.supplierId].total += record.total;
+                purchaseStats[record.supplierId].items += record.quantity;
+                if (!purchaseStats[record.supplierId].lastDate || record.date > purchaseStats[record.supplierId].lastDate) {
+                    purchaseStats[record.supplierId].lastDate = record.dateStr;
+                }
+            });
+            
+            // حساب إحصائيات المبيعات
+            const salesStats = getSupplierSalesStats();
+            
+            suppliers.forEach(supplier => {
+                const purchases = purchaseStats[supplier.id] || { total: 0, items: 0, lastDate: '' };
+                const sales = salesStats[supplier.id] || { totalSoldQuantity: 0, totalCost: 0 };
+                const itemsCount = inventory.filter(item => item.supplierId === supplier.id).length;
+                
+                html += `
+                    <tr>
+                        <td><strong>${supplier.name}</strong><br><small style="color: var(--gray);">${supplier.notes || ''}</small></td>
+                        <td>${supplier.phone || '-'}</td>
+                        <td>${itemsCount}</td>
+                        <td class="profit-positive">${purchases.total.toLocaleString()} ريال</td>
+                        <td class="profit-positive" style="color: var(--supplier-sales);">${sales.totalCost.toLocaleString()} ريال</td>
+                        <td>${sales.totalSoldQuantity}</td>
+                        <td>${purchases.lastDate || 'لم يتم'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="edit-btn" onclick="editSupplier(${supplier.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="delete-btn" onclick="openDeleteSupplierModal(${supplier.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            if (suppliers.length === 0) {
+                html = '<tr><td colspan="8" style="text-align: center;">لا توجد موردين</td></tr>';
+            }
+            
+            tbody.innerHTML = html;
+            
+            // تحديث سجل التوريدات
+            loadSupplierHistory();
+            // تحديث تقارير الموردين
+            loadSupplierSalesReport();
+        }
+
+        function loadSupplierHistory() {
+            const tbody = document.getElementById('supplierHistoryBody');
+            const filterSelect = document.getElementById('supplierFilter');
+            if (!tbody || !filterSelect) return;
+            
+            // تحديث قائمة الموردين في الفلتر
+            let filterOptions = '<option value="">جميع الموردين</option>';
+            suppliers.forEach(supplier => {
+                filterOptions += `<option value="${supplier.id}">${supplier.name}</option>`;
+            });
+            filterSelect.innerHTML = filterOptions;
+            
+            let filteredHistory = supplierHistory;
+            const selectedSupplier = filterSelect.value;
+            if (selectedSupplier) {
+                filteredHistory = supplierHistory.filter(record => record.supplierId == selectedSupplier);
+            }
+            
+            let html = '';
+            let total = 0;
+            
+            filteredHistory.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(record => {
+                const supplier = suppliers.find(s => s.id === record.supplierId);
+                html += `
+                    <tr>
+                        <td>${record.dateStr}</td>
+                        <td>${supplier ? supplier.name : 'غير معروف'}</td>
+                        <td>${record.itemName}</td>
+                        <td>${record.quantity}</td>
+                        <td>${record.buyPrice.toLocaleString()} ريال</td>
+                        <td class="profit-positive">${record.total.toLocaleString()} ريال</td>
+                    </tr>
+                `;
+                total += record.total;
+            });
+            
+            if (filteredHistory.length === 0) {
+                html = '<tr><td colspan="6" style="text-align: center;">لا توجد توريدات</td></tr>';
+            }
+            
+            tbody.innerHTML = html;
+        }
+
+        function filterSupplierHistory() {
+            loadSupplierHistory();
+        }
+
+        function updateSupplierSelect() {
+            const select = document.getElementById('itemSupplier');
+            if (!select) return;
+            
+            let options = '<option value="">-- اختر المورد --</option>';
+            suppliers.forEach(supplier => {
+                options += `<option value="${supplier.id}">${supplier.name}</option>`;
+            });
+            select.innerHTML = options;
+        }
+
+        // ========== دوال تقارير الموردين (جديدة) ==========
+        function updateSupplierReportFilter() {
+            const filterSelect = document.getElementById('reportSupplierFilter');
+            if (!filterSelect) return;
+            
+            let options = '<option value="">جميع الموردين</option>';
+            suppliers.forEach(supplier => {
+                options += `<option value="${supplier.id}">${supplier.name}</option>`;
+            });
+            filterSelect.innerHTML = options;
+        }
+
+        function filterSupplierSalesReport() {
+            const supplierFilter = document.getElementById('reportSupplierFilter');
+            const dateFilter = document.getElementById('reportSupplierDateFilter');
+            
+            currentSupplierSalesFilter = {
+                supplierId: supplierFilter ? supplierFilter.value : '',
+                date: dateFilter ? dateFilter.value : ''
+            };
+            
+            loadSupplierSalesReport();
+        }
+
+        function clearSupplierSalesFilter() {
+            document.getElementById('reportSupplierFilter').value = '';
+            document.getElementById('reportSupplierDateFilter').value = '';
+            currentSupplierSalesFilter = { supplierId: '', date: '' };
+            loadSupplierSalesReport();
+        }
+
+        function loadSupplierSalesReport() {
+            const tbody = document.getElementById('supplierSalesBody');
+            const summaryDiv = document.getElementById('supplierSummary');
+            if (!tbody || !summaryDiv) return;
+            
+            // فلترة المبيعات
+            let filteredSales = [...allSales];
+            
+            if (currentSupplierSalesFilter.supplierId) {
+                filteredSales = filteredSales.filter(sale => {
+                    const item = inventory.find(i => i.id === sale.itemId);
+                    return item && item.supplierId == currentSupplierSalesFilter.supplierId;
+                });
+            }
+            
+            if (currentSupplierSalesFilter.date) {
+                const filterDate = new Date(currentSupplierSalesFilter.date).toLocaleDateString('ar-SA', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                filteredSales = filteredSales.filter(sale => sale.dateStr === filterDate);
+            }
+            
+            // ترتيب المبيعات من الأحدث للأقدم
+            filteredSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            let html = '';
+            let totalCost = 0;
+            let totalRevenue = 0;
+            let totalProfit = 0;
+            let totalQuantity = 0;
+            
+            // إحصائيات لكل مورد
+            const supplierStats = {};
+            
+            filteredSales.forEach(sale => {
+                const item = inventory.find(i => i.id === sale.itemId);
+                if (!item) return;
+                
+                const supplier = suppliers.find(s => s.id === item.supplierId);
+                const supplierName = supplier ? supplier.name : 'غير معروف';
+                const supplierId = item.supplierId || 0;
+                
+                // تجميع الإحصائيات
+                totalCost += sale.quantity * sale.buyPrice;
+                totalRevenue += sale.total;
+                totalProfit += sale.profit;
+                totalQuantity += sale.quantity;
+                
+                if (!supplierStats[supplierId]) {
+                    supplierStats[supplierId] = {
+                        name: supplierName,
+                        quantity: 0,
+                        cost: 0,
+                        revenue: 0,
+                        profit: 0
+                    };
+                }
+                supplierStats[supplierId].quantity += sale.quantity;
+                supplierStats[supplierId].cost += sale.quantity * sale.buyPrice;
+                supplierStats[supplierId].revenue += sale.total;
+                supplierStats[supplierId].profit += sale.profit;
+                
+                html += `
+                    <tr>
+                        <td>${sale.dateStr}</td>
+                        <td>${supplierName}</td>
+                        <td>${sale.itemName}</td>
+                        <td>${sale.quantity}</td>
+                        <td>${sale.buyPrice.toLocaleString()} ريال</td>
+                        <td class="profit-positive">${(sale.quantity * sale.buyPrice).toLocaleString()} ريال</td>
+                        <td>${sale.sellPrice.toLocaleString()} ريال</td>
+                        <td class="profit-positive">+${sale.profit.toLocaleString()} ريال</td>
+                    </tr>
+                `;
+            });
+            
+            if (filteredSales.length === 0) {
+                html = '<tr><td colspan="8" style="text-align: center;">لا توجد مبيعات</td></tr>';
+            }
+            
+            tbody.innerHTML = html;
+            
+            // تحديث الإحصائيات العامة
+            document.getElementById('totalSupplierSalesCost').textContent = totalCost.toLocaleString() + ' ريال';
+            document.getElementById('totalSupplierSoldItems').textContent = totalQuantity;
+            
+            // حساب نسبة المبيعات من المخزون
+            const totalInventoryQuantity = inventory.reduce((sum, item) => sum + item.quantity, 0);
+            const totalSoldQuantity = allSales.reduce((sum, sale) => sum + sale.quantity, 0);
+            const percentage = totalInventoryQuantity > 0 ? ((totalSoldQuantity / (totalInventoryQuantity + totalSoldQuantity)) * 100).toFixed(1) : 0;
+            document.getElementById('supplierSalesPercentage').textContent = percentage + '%';
+            
+            // عرض ملخص الموردين
+            let summaryHtml = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">';
+            
+            Object.values(supplierStats).forEach(stat => {
+                summaryHtml += `
+                    <div style="background: white; padding: 15px; border-radius: 20px; border-right: 5px solid var(--supplier-sales);">
+                        <h4 style="color: var(--dark); margin-bottom: 10px;">${stat.name}</h4>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="color: var(--gray);">الكمية المباعة:</span>
+                            <span style="font-weight: 700;">${stat.quantity}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="color: var(--gray);">إجمالي التكلفة:</span>
+                            <span style="font-weight: 700; color: var(--supplier-sales);">${stat.cost.toLocaleString()} ريال</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--gray);">إجمالي الربح:</span>
+                            <span style="font-weight: 700; color: var(--secondary);">+${stat.profit.toLocaleString()} ريال</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (Object.keys(supplierStats).length === 0) {
+                summaryHtml += '<div style="text-align: center; padding: 30px; color: var(--gray);">لا توجد إحصائيات</div>';
+            }
+            
+            summaryHtml += '</div>';
+            summaryDiv.innerHTML = summaryHtml;
         }
 
         // ========== دوال المخرجات ==========
@@ -3507,6 +4323,8 @@
                 returns: 'المسترجع',
                 historyReturns: 'المسترجع السابق',
                 expenses: 'المخرجات',
+                suppliers: 'الموردين',
+                supplierReports: 'تقارير الموردين',
                 inventory: 'المخزون',
                 profits: 'الأرباح',
                 reports: 'التقارير',
@@ -3542,6 +4360,12 @@
             } else if (page === 'expenses') {
                 loadExpenses();
                 document.getElementById('expensesDate').textContent = new Date().toLocaleDateString('ar-SA');
+            } else if (page === 'suppliers') {
+                loadSuppliers();
+                updateSupplierSelect();
+            } else if (page === 'supplierReports') {
+                updateSupplierReportFilter();
+                loadSupplierSalesReport();
             } else if (page === 'inventory') {
                 loadInventoryTable();
             } else if (page === 'profits') {
@@ -3681,6 +4505,13 @@
                     const lowStock = (item.quantity || 0) < 50 ? 'low-stock' : '';
                     const highlight = currentSearchTerm && item.name && item.name.toLowerCase().includes(currentSearchTerm) ? 'search-highlight' : '';
                     
+                    const supplier = suppliers.find(s => s.id === item.supplierId);
+                    const supplierInfo = supplier ? 
+                        `<div class="supplier-info">
+                            <i class="fas fa-truck"></i>
+                            المورد: ${supplier.name}
+                        </div>` : '';
+                    
                     html += `
                         <div class="item-card ${lowStock} ${highlight}" id="item-${item.id}">
                             <div class="item-header">
@@ -3702,6 +4533,8 @@
                                     <div class="detail-value profit">+${profitPerItem.toLocaleString()} ريال</div>
                                 </div>
                             </div>
+                            
+                            ${supplierInfo}
                             
                             <div class="stock-info">
                                 <span class="stock-label">المخزون المتبقي:</span>
@@ -3729,7 +4562,7 @@
             grid.innerHTML = html;
         }
 
-        // ========== دالة البيع مع الحفظ في التاريخ ==========
+        // ========== دالة البيع (معدلة مع تسجيل المبيعات للمورد) ==========
         function sellItem(itemId) {
             const item = inventory.find(i => i.id === itemId);
             if (!item) return;
@@ -3781,10 +4614,16 @@
             updateDashboard();
             updateProfitsPage();
             
+            // تحديث إحصائيات الموردين
+            if (item.supplierId) {
+                loadSuppliers();
+                loadSupplierSalesReport();
+            }
+            
             showAlert(`تم بيع ${qty} ${item.name} بنجاح! الربح: ${profit.toLocaleString()} ريال`, 'success');
         }
 
-        // ========== دالة استرجاع المنتج (فقط يرجع للمخزون بدون تأثير على الأرباح) ==========
+        // ========== دالة استرجاع المنتج (معدلة مع تحديث إحصائيات المورد) ==========
         function returnSale(saleId) {
             if (!checkPermission('canReturn')) {
                 showAlert('ليس لديك صلاحية لإلغاء المبيعات', 'error');
@@ -3803,13 +4642,13 @@
                 return;
             }
             
-            // إعادة الكمية إلى المخزون فقط
+            // إعادة الكمية إلى المخزون
             const item = inventory.find(i => i.id === sale.itemId);
             if (item) {
                 item.quantity += sale.quantity;
             }
             
-            // تسجيل عملية الاسترجاع (للتاريخ فقط)
+            // تسجيل عملية الاسترجاع
             const returnRecord = {
                 id: Date.now(),
                 date: new Date().toISOString(),
@@ -3838,6 +4677,12 @@
             loadInventoryForSale();
             updateDashboard();
             updateProfitsPage();
+            
+            // تحديث إحصائيات الموردين
+            if (item && item.supplierId) {
+                loadSuppliers();
+                loadSupplierSalesReport();
+            }
             
             showAlert(`تم إلغاء البيع وإرجاع ${sale.quantity} ${sale.itemName} إلى المخزون`, 'success');
         }
@@ -4071,6 +4916,9 @@
                 const totalValue = (item.quantity || 0) * (item.sellPrice || 0);
                 const canEdit = checkPermission('canEditItems');
                 
+                const supplier = suppliers.find(s => s.id === item.supplierId);
+                const supplierName = supplier ? supplier.name : '-';
+                
                 const actionButtons = canEdit ? `
                     <div class="action-buttons">
                         <button class="edit-btn" onclick="editItem(${item.id})">
@@ -4090,6 +4938,7 @@
                         <td>${(item.sellPrice || 0).toLocaleString()} ريال</td>
                         <td class="profit-positive">+${profitPerItem.toLocaleString()} ريال</td>
                         <td>${totalValue.toLocaleString()} ريال</td>
+                        <td>${supplierName}</td>
                         <td>${actionButtons}</td>
                     </tr>
                 `;
@@ -4176,6 +5025,7 @@
             loadReturns();
             loadHistoryReturns();
             loadExpenses();
+            loadSuppliers();
             loadReports();
             loadInventoryTable();
             updateDashboard();
@@ -4211,6 +5061,8 @@
                     if (user.permissions && user.permissions.canFactoryReset) permissionTags.push('<span class="permission-badge reset">🔄 إعادة ضبط</span>');
                     if (user.permissions && user.permissions.canChangeSiteName) permissionTags.push('<span class="permission-badge changename">✏️ اسم الموقع</span>');
                     if (user.permissions && user.permissions.canManageExpenses) permissionTags.push('<span class="permission-badge expenses">💰 مخرجات</span>');
+                    if (user.permissions && user.permissions.canManageSuppliers) permissionTags.push('<span class="permission-badge supplier">🚚 موردين</span>');
+                    if (user.permissions && user.permissions.canViewSupplierReports) permissionTags.push('<span class="permission-badge supplier-sales">📊 تقارير موردين</span>');
                 }
                 
                 const isAdmin = user.id === 1 ? 'admin-card' : '';
@@ -4260,6 +5112,7 @@
                 document.getElementById('itemQty').value = '100';
                 document.getElementById('itemBuy').value = '100';
                 document.getElementById('itemSell').value = '150';
+                updateSupplierSelect();
                 document.getElementById('itemModal').classList.add('show');
             } else if (type === 'addUser') {
                 document.getElementById('userModalTitle').textContent = 'إضافة مستخدم جديد';
@@ -4276,6 +5129,8 @@
                 document.getElementById('userCanFactoryReset').checked = false;
                 document.getElementById('userCanChangeSiteName').checked = false;
                 document.getElementById('userCanManageExpenses').checked = false;
+                document.getElementById('userCanManageSuppliers').checked = false;
+                document.getElementById('userCanViewSupplierReports').checked = false;
                 document.getElementById('userHasFullAccess').checked = false;
                 document.getElementById('fullAccessNote').style.display = 'none';
                 document.getElementById('userModal').classList.add('show');
@@ -4301,15 +5156,34 @@
             const qty = parseInt(document.getElementById('itemQty').value);
             const buy = parseInt(document.getElementById('itemBuy').value);
             const sell = parseInt(document.getElementById('itemSell').value);
+            const supplierId = parseInt(document.getElementById('itemSupplier').value) || null;
             
             if (name && qty && buy && sell) {
                 if (id) {
                     const item = inventory.find(i => i.id === parseInt(id));
                     if (item) {
+                        // إذا تغير سعر الشراء أو الكمية، نسجل في سجل التوريدات
+                        if (item.buyPrice !== buy || item.quantity < qty) {
+                            const addedQty = qty - item.quantity;
+                            if (addedQty > 0 && supplierId) {
+                                supplierHistory.push({
+                                    id: Date.now() + Math.random(),
+                                    supplierId: supplierId,
+                                    itemName: name,
+                                    quantity: addedQty,
+                                    buyPrice: buy,
+                                    total: addedQty * buy,
+                                    date: new Date().toISOString(),
+                                    dateStr: new Date().toLocaleDateString('ar-SA')
+                                });
+                            }
+                        }
+                        
                         item.name = name;
                         item.quantity = qty;
                         item.buyPrice = buy;
                         item.sellPrice = sell;
+                        item.supplierId = supplierId;
                         showAlert('تم تعديل الصنف بنجاح', 'success');
                     }
                 } else {
@@ -4319,8 +5193,24 @@
                         name: name,
                         quantity: qty,
                         buyPrice: buy,
-                        sellPrice: sell
+                        sellPrice: sell,
+                        supplierId: supplierId
                     });
+                    
+                    // تسجيل التوريد
+                    if (supplierId) {
+                        supplierHistory.push({
+                            id: Date.now(),
+                            supplierId: supplierId,
+                            itemName: name,
+                            quantity: qty,
+                            buyPrice: buy,
+                            total: qty * buy,
+                            date: new Date().toISOString(),
+                            dateStr: new Date().toLocaleDateString('ar-SA')
+                        });
+                    }
+                    
                     showAlert('تم إضافة الصنف بنجاح', 'success');
                 }
                 
@@ -4328,6 +5218,7 @@
                 
                 loadInventoryTable();
                 loadInventoryForSale();
+                loadSuppliers();
                 updateDashboard();
                 updateProfitsPage();
                 
@@ -4349,6 +5240,8 @@
                 document.getElementById('itemQty').value = item.quantity;
                 document.getElementById('itemBuy').value = item.buyPrice;
                 document.getElementById('itemSell').value = item.sellPrice;
+                updateSupplierSelect();
+                document.getElementById('itemSupplier').value = item.supplierId || '';
                 document.getElementById('itemModal').classList.add('show');
             }
         }
@@ -4368,6 +5261,7 @@
                 loadInventoryForSale();
                 updateDashboard();
                 updateProfitsPage();
+                loadSuppliers(); // تحديث إحصائيات الموردين
                 showAlert('تم حذف الصنف', 'success');
             }
         }
@@ -4395,6 +5289,8 @@
                 document.getElementById('userCanFactoryReset').checked = user.permissions?.canFactoryReset || false;
                 document.getElementById('userCanChangeSiteName').checked = user.permissions?.canChangeSiteName || false;
                 document.getElementById('userCanManageExpenses').checked = user.permissions?.canManageExpenses || false;
+                document.getElementById('userCanManageSuppliers').checked = user.permissions?.canManageSuppliers || false;
+                document.getElementById('userCanViewSupplierReports').checked = user.permissions?.canViewSupplierReports || false;
                 document.getElementById('userHasFullAccess').checked = user.permissions?.hasFullAccess || false;
                 document.getElementById('fullAccessNote').style.display = user.permissions?.hasFullAccess ? 'block' : 'none';
                 document.getElementById('userModal').classList.add('show');
@@ -4422,6 +5318,8 @@
                 canFactoryReset: document.getElementById('userCanFactoryReset').checked,
                 canChangeSiteName: document.getElementById('userCanChangeSiteName').checked,
                 canManageExpenses: document.getElementById('userCanManageExpenses').checked,
+                canManageSuppliers: document.getElementById('userCanManageSuppliers').checked,
+                canViewSupplierReports: document.getElementById('userCanViewSupplierReports').checked,
                 hasFullAccess: document.getElementById('userHasFullAccess').checked
             };
             
@@ -4465,6 +5363,80 @@
             }
         }
 
+        // ========== دوال تغيير كلمة مرور الأدمن ==========
+        function openChangeAdminPasswordModal() {
+            if (!checkPermission('canChangeAdminPassword')) {
+                showAlert('ليس لديك صلاحية تغيير كلمة مرور الأدمن', 'error');
+                return;
+            }
+            document.getElementById('changeAdminPasswordModal').classList.add('show');
+        }
+
+        function closeAdminPasswordModal() {
+            document.getElementById('changeAdminPasswordModal').classList.remove('show');
+            document.getElementById('newAdminPassword').value = '';
+            document.getElementById('confirmAdminPassword').value = '';
+        }
+
+        function changeAdminPassword() {
+            const newPassword = document.getElementById('newAdminPassword').value;
+            const confirmPassword = document.getElementById('confirmAdminPassword').value;
+            
+            if (!newPassword || !confirmPassword) {
+                showAlert('الرجاء إدخال كلمة المرور', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showAlert('كلمة المرور غير متطابقة', 'error');
+                return;
+            }
+            
+            const admin = users.find(u => u.id === 1);
+            if (admin) {
+                admin.password = newPassword;
+                saveToLocalStorage();
+                showAlert('تم تغيير كلمة مرور الأدمن بنجاح', 'success');
+                closeAdminPasswordModal();
+            }
+        }
+
+        // ========== دوال حذف المستخدمين ==========
+        function openDeleteUserModal(userId) {
+            if (!checkPermission('canManageUsers') && !checkPermission('hasFullAccess')) {
+                showAlert('ليس لديك صلاحية حذف المستخدمين', 'error');
+                return;
+            }
+            
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+            
+            if (user.id === 1) {
+                showAlert('لا يمكن حذف الأدمن الرئيسي', 'error');
+                return;
+            }
+            
+            userToDelete = userId;
+            document.getElementById('deleteUserName').textContent = user.name;
+            document.getElementById('deleteUserConfirmModal').classList.add('show');
+        }
+
+        function closeDeleteUserModal() {
+            document.getElementById('deleteUserConfirmModal').classList.remove('show');
+            userToDelete = null;
+        }
+
+        function confirmDeleteUser() {
+            if (!userToDelete) return;
+            
+            users = users.filter(u => u.id !== userToDelete);
+            saveToLocalStorage();
+            loadUsers();
+            
+            closeDeleteUserModal();
+            showAlert('تم حذف المستخدم بنجاح', 'success');
+        }
+
         // ========== دوال النسخ الاحتياطي ==========
         function updateBackupInfo() {
             document.getElementById('backupItemsCount').textContent = inventory.length;
@@ -4472,6 +5444,7 @@
             document.getElementById('backupReturnsCount').textContent = returnsToday.length;
             document.getElementById('backupExpensesCount').textContent = expensesToday.length;
             document.getElementById('backupUsersCount').textContent = users.length;
+            document.getElementById('backupSuppliersCount').textContent = suppliers.length;
             
             const lastBackup = localStorage.getItem('lastBackupTime');
             if (lastBackup) {
@@ -4484,11 +5457,13 @@
                 siteSettings: siteSettings,
                 users: users,
                 inventory: inventory,
+                suppliers: suppliers,
+                supplierHistory: supplierHistory,
                 allSales: allSales,
                 allReturns: allReturns,
                 allExpenses: allExpenses,
                 backupDate: new Date().toLocaleString('ar-SA'),
-                version: '12.0'
+                version: '14.0'
             };
             
             const jsonData = JSON.stringify(backupData, null, 2);
@@ -4521,6 +5496,8 @@
                     if (backupData.inventory && backupData.users) {
                         if (backupData.siteSettings) siteSettings = backupData.siteSettings;
                         inventory = backupData.inventory;
+                        suppliers = backupData.suppliers || [];
+                        supplierHistory = backupData.supplierHistory || [];
                         allSales = backupData.allSales || [];
                         allReturns = backupData.allReturns || [];
                         allExpenses = backupData.allExpenses || [];
